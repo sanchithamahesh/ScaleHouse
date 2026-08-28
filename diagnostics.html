@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Web Serial Diagnostics</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 700px; margin: 20px auto; padding: 0 16px; color: #222; }
+  h1 { font-size: 18px; }
+  h2 { font-size: 15px; margin-top: 24px; border-top: 1px solid #ddd; padding-top: 12px; }
+  button { background: #782B90; color: white; border: none; padding: 10px 16px; font-size: 14px; border-radius: 6px; cursor: pointer; margin: 4px 4px 4px 0; }
+  button:disabled { background: #ccc; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 8px; }
+  td { border: 1px solid #ddd; padding: 6px 8px; vertical-align: top; word-break: break-all; }
+  td:first-child { font-weight: bold; width: 40%; background: #f7f4f8; }
+  .ok { color: #1a7a1a; }
+  .bad { color: #b00020; }
+  .warn { color: #b06a00; }
+  #hexlog, #asciilog {
+    background: #111; color: #0f0; font-family: monospace; font-size: 12px;
+    padding: 10px; height: 140px; overflow-y: auto; border-radius: 6px; white-space: pre-wrap;
+  }
+  label { font-size: 13px; display: block; margin-top: 10px; }
+  input { padding: 6px; font-size: 14px; width: 100px; }
+</style>
+</head>
+<body>
+  <h1>Web Serial Diagnostics — runs on the real PWA origin</h1>
+
+  <h2>1. Environment checks (run automatically on load)</h2>
+  <table id="envTable"></table>
+
+  <h2>2. Already-granted ports (navigator.serial.getPorts())</h2>
+  <button id="getPortsBtn">Run getPorts()</button>
+  <table id="getPortsTable"></table>
+
+  <h2>3. Request a port (navigator.serial.requestPort())</h2>
+  <p style="font-size:13px;color:#666">Must be triggered by this button tap (user gesture requirement).</p>
+  <button id="requestPortBtn">Run requestPort() - no filter</button>
+  <table id="requestPortTable"></table>
+
+  <h2>3b. Explicit SPP UUID - lowercase string form</h2>
+  <p style="font-size:13px;color:#666">allowedBluetoothServiceClassIds: ["00001101-0000-1000-8000-00805f9b34fb"]</p>
+  <button id="requestPortUuidLowerBtn">Run - lowercase UUID string</button>
+  <table id="requestPortUuidLowerTable"></table>
+
+  <h2>3c. Explicit SPP UUID - numeric 16-bit alias form</h2>
+  <p style="font-size:13px;color:#666">allowedBluetoothServiceClassIds: [0x1101]</p>
+  <button id="requestPortUuidNumBtn">Run - numeric 0x1101</button>
+  <table id="requestPortUuidNumTable"></table>
+
+  <h2>3d. Explicit SPP UUID - numeric + filters combined</h2>
+  <p style="font-size:13px;color:#666">allowedBluetoothServiceClassIds: [0x1101], filters: [{ bluetoothServiceClassId: 0x1101 }]</p>
+  <button id="requestPortUuidBothBtn">Run - numeric + filters</button>
+  <table id="requestPortUuidBothTable"></table>
+
+  <h2>3e. The full Windows hardware ID string, literally</h2>
+  <p style="font-size:13px;color:#666">allowedBluetoothServiceClassIds: ["BTHENUM\{00001101-0000-1000-8000-00805f9b34fb}_LOCALMFG&amp;0002"]</p>
+  <button id="requestPortWinIdBtn">Run - full Windows ID string</button>
+  <table id="requestPortWinIdTable"></table>
+
+  <h2>4. Raw read mode (only shown once a port is selected)</h2>
+  <div id="readSection" style="display:none">
+    <label for="baud">Baud rate</label>
+    <input id="baud" type="number" value="9600" />
+    <div>
+      <button id="openBtn">Open port</button>
+      <button id="closeBtn" disabled>Close port</button>
+    </div>
+    <p style="font-size:12px;color:#666">
+      Raw bytes only — no parsing, no filtering, no assumptions about which part is the weight.
+      0x0D = CR, 0x0A = LF, shown explicitly below.
+    </p>
+    <p style="font-size:12px;font-weight:bold">Hex:</p>
+    <div id="hexlog"></div>
+    <p style="font-size:12px;font-weight:bold">ASCII (control chars shown as [CR] [LF] [xx]):</p>
+    <div id="asciilog"></div>
+  </div>
+
+<script>
+function addRow(table, label, value, cls) {
+  const row = table.insertRow();
+  const c1 = row.insertCell();
+  const c2 = row.insertCell();
+  c1.textContent = label;
+  c2.textContent = value;
+  if (cls) c2.className = cls;
+}
+
+// --- 1. Environment ---
+const envTable = document.getElementById('envTable');
+addRow(envTable, 'location.href', location.href);
+addRow(envTable, 'location.origin', location.origin);
+addRow(envTable, 'window.isSecureContext', String(window.isSecureContext), window.isSecureContext ? 'ok' : 'bad');
+addRow(envTable, '"serial" in navigator', String('serial' in navigator), ('serial' in navigator) ? 'ok' : 'bad');
+
+// document.permissionsPolicy is non-standard/experimental and not present in
+// most Chrome builds - report exactly what's available, do not assume.
+let ppResult = 'document.permissionsPolicy is undefined in this browser (API not present) — cannot query directly';
+let ppCls = 'warn';
+try {
+  if (document.permissionsPolicy && typeof document.permissionsPolicy.allowsFeature === 'function') {
+    const allowed = document.permissionsPolicy.allowsFeature('serial');
+    ppResult = String(allowed);
+    ppCls = allowed ? 'ok' : 'bad';
+  }
+} catch (e) {
+  ppResult = 'Error querying permissionsPolicy: ' + e.message;
+  ppCls = 'bad';
+}
+addRow(envTable, 'document.permissionsPolicy?.allowsFeature("serial")', ppResult, ppCls);
+addRow(envTable, 'navigator.userAgent', navigator.userAgent);
+
+// --- 2. getPorts() ---
+document.getElementById('getPortsBtn').addEventListener('click', async () => {
+  const table = document.getElementById('getPortsTable');
+  table.innerHTML = '';
+  try {
+    const ports = await navigator.serial.getPorts();
+    addRow(table, 'Call succeeded', 'yes', 'ok');
+    addRow(table, 'Number of ports', String(ports.length));
+    ports.forEach((p, i) => {
+      addRow(table, `Port ${i} getInfo()`, JSON.stringify(p.getInfo()));
+    });
+  } catch (e) {
+    addRow(table, 'Error name', e.name, 'bad');
+    addRow(table, 'Error message', e.message, 'bad');
+  }
+});
+
+// --- 3. requestPort() ---
+let selectedPort = null;
+document.getElementById('requestPortBtn').addEventListener('click', async () => {
+  const table = document.getElementById('requestPortTable');
+  table.innerHTML = '';
+  try {
+    const port = await navigator.serial.requestPort();
+    selectedPort = port;
+    addRow(table, 'Call succeeded', 'yes - user selected a device', 'ok');
+    addRow(table, 'getInfo()', JSON.stringify(port.getInfo()));
+    document.getElementById('readSection').style.display = 'block';
+  } catch (e) {
+    addRow(table, 'Error name', e.name, 'bad');
+    addRow(table, 'Error message', e.message, 'bad');
+    addRow(table, 'Interpretation',
+      e.name === 'SecurityError'
+        ? 'Blocked before the device picker (permissions policy / insecure context) — the device-discovery step was never reached.'
+        : e.name === 'NotFoundError'
+        ? 'The device picker DID open, but the user closed it or nothing was selected (this includes "no compatible devices" cases in some Chrome versions).'
+        : 'Unrecognized error — see message above.', 'warn');
+  }
+});
+
+async function runFilterTest(buttonId, tableId, options) {
+  document.getElementById(buttonId).addEventListener('click', async () => {
+    const table = document.getElementById(tableId);
+    table.innerHTML = '';
+    try {
+      const port = await navigator.serial.requestPort(options);
+      selectedPort = port;
+      addRow(table, 'Call succeeded', 'yes - user selected a device', 'ok');
+      addRow(table, 'getInfo()', JSON.stringify(port.getInfo()));
+      document.getElementById('readSection').style.display = 'block';
+    } catch (e) {
+      addRow(table, 'Error name', e.name, 'bad');
+      addRow(table, 'Error message', e.message, 'bad');
+    }
+  });
+}
+
+runFilterTest('requestPortUuidLowerBtn', 'requestPortUuidLowerTable', {
+  allowedBluetoothServiceClassIds: ['00001101-0000-1000-8000-00805f9b34fb']
+});
+
+runFilterTest('requestPortUuidNumBtn', 'requestPortUuidNumTable', {
+  allowedBluetoothServiceClassIds: [0x1101]
+});
+
+runFilterTest('requestPortUuidBothBtn', 'requestPortUuidBothTable', {
+  allowedBluetoothServiceClassIds: [0x1101],
+  filters: [{ bluetoothServiceClassId: 0x1101 }]
+});
+
+runFilterTest('requestPortWinIdBtn', 'requestPortWinIdTable', {
+  allowedBluetoothServiceClassIds: ['BTHENUM\\{00001101-0000-1000-8000-00805f9b34fb}_LOCALMFG&0002']
+});
+
+// --- 4. Raw read mode ---
+let port, reader, keepReading = false;
+
+function hex2(n) { return n.toString(16).padStart(2, '0').toUpperCase(); }
+
+function logRaw(bytes) {
+  const hexDiv = document.getElementById('hexlog');
+  const asciiDiv = document.getElementById('asciilog');
+  let hexOut = '';
+  let asciiOut = '';
+  for (const b of bytes) {
+    hexOut += hex2(b) + ' ';
+    if (b === 0x0D) asciiOut += '[CR]';
+    else if (b === 0x0A) asciiOut += '[LF]\n';
+    else if (b >= 0x20 && b <= 0x7E) asciiOut += String.fromCharCode(b);
+    else asciiOut += '[' + hex2(b) + ']';
+  }
+  hexDiv.textContent += hexOut + '\n';
+  hexDiv.scrollTop = hexDiv.scrollHeight;
+  asciiDiv.textContent += asciiOut;
+  asciiDiv.scrollTop = asciiDiv.scrollHeight;
+}
+
+document.getElementById('openBtn').addEventListener('click', async () => {
+  if (!selectedPort) return;
+  port = selectedPort;
+  const baud = Number(document.getElementById('baud').value) || 9600;
+  try {
+    await port.open({ baudRate: baud });
+    keepReading = true;
+    document.getElementById('openBtn').disabled = true;
+    document.getElementById('closeBtn').disabled = false;
+    readLoop();
+  } catch (e) {
+    alert('Open failed: ' + e.name + ': ' + e.message);
+  }
+});
+
+async function readLoop() {
+  reader = port.readable.getReader();
+  try {
+    while (keepReading) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      if (value && value.length) logRaw(value); // value is a raw Uint8Array - unmodified
+    }
+  } catch (e) {
+    logRaw(new TextEncoder().encode('\n[READ ERROR: ' + e.name + ': ' + e.message + ']\n'));
+  } finally {
+    reader.releaseLock();
+  }
+}
+
+document.getElementById('closeBtn').addEventListener('click', async () => {
+  keepReading = false;
+  if (reader) { try { await reader.cancel(); } catch (e) {} }
+  if (port) { try { await port.close(); } catch (e) {} }
+  document.getElementById('openBtn').disabled = false;
+  document.getElementById('closeBtn').disabled = true;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Scale Bluetooth POC</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#782B90" />
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    max-width: 480px;
+    margin: 40px auto;
+    padding: 0 16px;
+    color: #222;
+  }
+  h1 { font-size: 20px; }
+  button {
+    background: #782B90;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 8px;
+  }
+  button:disabled { background: #ccc; cursor: not-allowed; }
+  #weight {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 24px 0;
+    padding: 24px;
+    background: #f4f0f6;
+    border-radius: 8px;
+    text-align: center;
+  }
+  #status { color: #666; margin: 8px 0; }
+  #log {
+    background: #111;
+    color: #0f0;
+    font-family: monospace;
+    font-size: 12px;
+    padding: 12px;
+    height: 180px;
+    overflow-y: auto;
+    border-radius: 6px;
+    white-space: pre-wrap;
+  }
+  label { font-size: 14px; display: block; margin-top: 12px; }
+  input { padding: 6px; font-size: 14px; width: 100px; }
+</style>
+</head>
+<body>
+  <h1>Scale &rarr; PWA (Bluetooth Serial POC)</h1>
+  <p id="status">Not connected.</p>
+
+  <div>
+    <button id="connectBtn">Connect to Scale (Web Serial)</button>
+    <button id="disconnectBtn" disabled>Disconnect</button>
+  </div>
+
+  <label for="baud">Baud rate (change if data looks garbled):</label>
+  <input id="baud" type="number" value="9600" />
+
+  <div id="nativeSection" style="display:none; margin-top:20px; padding-top:16px; border-top:1px solid #ddd;">
+    <p style="font-size:13px;color:#666">Running inside the wrapped app - native Bluetooth bridge available:</p>
+    <button id="nativeConnectBtn">Connect to Scale (Native Bridge)</button>
+  </div>
+
+  <div id="weight">-- kg</div>
+
+  <p style="font-size:13px;color:#666">Raw data log:</p>
+  <div id="log"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,644 @@
+<title>Scalehouse Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper: #faf8fb;
+    --paper-raised: #ffffff;
+    --ink: #211a26;
+    --ink-soft: #5b5266;
+    --ink-faint: #948c9e;
+    --line: #e2dce8;
+    --line-strong: #cabfd4;
+    --accent: #6b2c82;
+    --accent-ink: #ffffff;
+    --accent-soft: #f1e9f5;
+    --accent-soft-line: #ddc9e6;
+    --ok: #2f7d5b;
+    --ok-soft: #e5f2ec;
+    --warn: #b36a1e;
+    --warn-soft: #f6ead9;
+    --code-bg: #f3eef6;
+    --shadow: 0 1px 2px rgba(33,26,38,0.06), 0 6px 20px -8px rgba(33,26,38,0.15);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #17131b;
+      --paper-raised: #201a26;
+      --ink: #f1ecf5;
+      --ink-soft: #b8aec4;
+      --ink-faint: #7c7288;
+      --line: #362d40;
+      --line-strong: #4a3d56;
+      --accent: #c78ee0;
+      --accent-ink: #201229;
+      --accent-soft: #2c2033;
+      --accent-soft-line: #4a3956;
+      --ok: #6fcba0;
+      --ok-soft: #1c2e26;
+      --warn: #e2a75f;
+      --warn-soft: #332619;
+      --code-bg: #241d2b;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 30px -10px rgba(0,0,0,0.5);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #17131b;
+    --paper-raised: #201a26;
+    --ink: #f1ecf5;
+    --ink-soft: #b8aec4;
+    --ink-faint: #7c7288;
+    --line: #362d40;
+    --line-strong: #4a3d56;
+    --accent: #c78ee0;
+    --accent-ink: #201229;
+    --accent-soft: #2c2033;
+    --accent-soft-line: #4a3956;
+    --ok: #6fcba0;
+    --ok-soft: #1c2e26;
+    --warn: #e2a75f;
+    --warn-soft: #332619;
+    --code-bg: #241d2b;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 30px -10px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+
+  h1, h2, h3 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    text-wrap: balance;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  code, .mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+  }
+
+  a { color: var(--accent); }
+
+  /* --- Top bar / wayfinding --- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 14px 28px;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+  }
+  .topbar .mark {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 15px;
+    white-space: nowrap;
+    color: var(--ink);
+    flex: none;
+  }
+  .topbar nav {
+    display: flex;
+    gap: 4px;
+    flex: none;
+  }
+  .topbar a {
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .topbar a:hover { color: var(--ink); background: var(--accent-soft); }
+
+  /* --- Page shell --- */
+  header.hero {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 28px 8px;
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  header.hero h1 {
+    font-size: clamp(30px, 4.4vw, 42px);
+    margin-top: 10px;
+    letter-spacing: -0.01em;
+  }
+  header.hero p.lede {
+    margin-top: 16px;
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 62ch;
+  }
+
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 8px 28px 100px;
+  }
+
+  section { margin-top: 76px; scroll-margin-top: 70px; }
+  section > .section-head { max-width: 640px; margin-bottom: 28px; }
+  section h2 {
+    font-size: 26px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  section h2 .num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 14px;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+  section .section-dek {
+    margin-top: 10px;
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+
+  /* --- Diagram frame --- */
+  figure.diagram {
+    margin: 28px 0;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  figure.diagram .svg-wrap {
+    overflow-x: auto;
+    padding: 22px 22px 8px;
+  }
+  figure.diagram svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+  figure.diagram figcaption {
+    padding: 12px 22px 18px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    margin-top: 10px;
+    padding-top: 14px;
+  }
+
+  /* --- Entity field tables --- */
+  .entity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .entity-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .entity-card .ehead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--accent-soft);
+    border-bottom: 1px solid var(--accent-soft-line);
+  }
+  .entity-card .ehead .name {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 500;
+    font-size: 13.5px;
+    color: var(--accent);
+  }
+  .entity-card .ehead .tag {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+  }
+  .entity-card table { width: 100%; border-collapse: collapse; }
+  .entity-card td {
+    padding: 7px 14px;
+    font-size: 13px;
+    border-top: 1px solid var(--line);
+    vertical-align: baseline;
+  }
+  .entity-card tr:first-child td { border-top: none; }
+  .entity-card td.field { font-family: "IBM Plex Mono", monospace; color: var(--ink); white-space: nowrap; }
+  .entity-card td.type { color: var(--ink-faint); text-align: right; font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+
+  /* --- Screen descriptions --- */
+  .screen-list {
+    display: grid;
+    gap: 14px;
+    margin-top: 24px;
+  }
+  .screen-card {
+    display: grid;
+    grid-template-columns: 168px 1fr;
+    gap: 20px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .screen-card .label {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .screen-card .label .state {
+    display: block;
+    margin-top: 6px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+  }
+  .screen-card ul { margin: 0; padding-left: 18px; font-size: 14.5px; color: var(--ink-soft); }
+  .screen-card li + li { margin-top: 6px; }
+  .screen-card li b { color: var(--ink); font-weight: 600; }
+
+  /* --- Status chips (mirrors the app's own indicator language) --- */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 100px;
+  }
+  .chip.ok { background: var(--ok-soft); color: var(--ok); }
+  .chip.warn { background: var(--warn-soft); color: var(--warn); }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* --- Decisions list --- */
+  .decisions { display: grid; gap: 2px; margin-top: 24px; }
+  .decision {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+  }
+  .decision:last-child { border-bottom: 1px solid var(--line); }
+  .decision .q { font-weight: 600; font-size: 15px; }
+  .decision .a { color: var(--ink-soft); font-size: 14.5px; max-width: 66ch; }
+
+  footer {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 28px 70px;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    border-top: 1px solid var(--line);
+    margin-top: 60px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    figure.diagram { transition: box-shadow 0.2s ease; }
+  }
+
+  @media (max-width: 640px) {
+    .screen-card { grid-template-columns: 1fr; }
+    .topbar { gap: 14px; padding: 12px 16px; }
+    header.hero { padding: 40px 18px 8px; }
+    main { padding: 8px 18px 80px; }
+  }
+</style>
+
+<div class="topbar">
+  <span class="mark">⚖ Scalehouse</span>
+  <nav>
+    <a href="#model">Data model</a>
+    <a href="#flow">Screen flow</a>
+    <a href="#decisions">Key decisions</a>
+  </nav>
+</div>
+
+<header class="hero">
+  <div class="eyebrow">Spec &middot; v0.1</div>
+  <h1>Weigh session, from scale to sheet</h1>
+  <p class="lede">How a reading from the scale becomes a stored entry, how a session moves from pending to ended, and what gets carried forward for reporting. Two diagrams, the fields behind them, and the calls worth flagging before anyone builds against this.</p>
+</header>
+
+<main>
+
+  <section id="model">
+    <div class="section-head">
+      <h2><span class="num">01</span> Data model</h2>
+      <p class="section-dek">Five tables. Two are written continuously while a session is open; two are written once, at the moments a session starts and ends.</p>
+    </div>
+
+    <figure class="diagram">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 900 560" role="img" aria-label="Entity relationship diagram: Store has many Sessions; Session has many Entries and many ConnectionEvents; Product has many Entries; a SessionProductSummary is written once per session at day-end, summarizing its Entries.">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+          <g fill="none" stroke="currentColor" stroke-width="1.4" opacity="0.55">
+            <line x1="170" y1="120" x2="170" y2="190" marker-end="url(#arrow)"/>
+            <line x1="280" y1="270" x2="600" y2="270" marker-end="url(#arrow)"/>
+            <line x1="710" y1="120" x2="710" y2="190" marker-end="url(#arrow)"/>
+            <line x1="170" y1="340" x2="170" y2="410" marker-end="url(#arrow)"/>
+            <line x1="710" y1="360" x2="710" y2="410" marker-end="url(#arrow)"/>
+          </g>
+          <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor" opacity="0.75">
+            <text x="184" y="158" text-anchor="start">1 &#8594; *</text>
+            <text x="440" y="262" text-anchor="middle">*</text>
+            <text x="724" y="158" text-anchor="start">1 &#8594; *</text>
+            <text x="184" y="378" text-anchor="start">1 &#8594; *</text>
+            <text x="590" y="390" text-anchor="end" opacity="0.9">day-end rollup</text>
+          </g>
+
+          <!-- Store -->
+          <g>
+            <rect x="60" y="20" width="220" height="100" rx="8" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+            <rect x="60" y="20" width="220" height="30" rx="8" fill="var(--accent-soft)" stroke="none"/>
+            <text x="76" y="40" font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="500" fill="var(--accent)">Store</text>
+            <text x="76" y="66" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">id · name</text>
+            <text x="76" y="84" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">code (for exports)</text>
+          </g>
+
+          <!-- Product -->
+          <g>
+            <rect x="600" y="20" width="220" height="100" rx="8" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+            <rect x="600" y="20" width="220" height="30" rx="8" fill="var(--accent-soft)" stroke="none"/>
+            <text x="616" y="40" font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="500" fill="var(--accent)">Product</text>
+            <text x="616" y="66" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">id · name · sku</text>
+            <text x="616" y="84" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">shared across stores</text>
+          </g>
+
+          <!-- Session -->
+          <g>
+            <rect x="60" y="190" width="220" height="150" rx="8" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.6"/>
+            <rect x="60" y="190" width="220" height="30" rx="8" fill="var(--accent-soft)" stroke="none"/>
+            <text x="76" y="210" font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="500" fill="var(--accent)">Session</text>
+            <text x="76" y="238" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">id · store_id</text>
+            <text x="76" y="256" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">status: pending | ended</text>
+            <text x="76" y="274" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">started_at</text>
+            <text x="76" y="292" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">ended_at, ended_reason</text>
+          </g>
+
+          <!-- Entry -->
+          <g>
+            <rect x="600" y="190" width="220" height="170" rx="8" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.6"/>
+            <rect x="600" y="190" width="220" height="30" rx="8" fill="var(--accent-soft)" stroke="none"/>
+            <text x="616" y="210" font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="500" fill="var(--accent)">Entry</text>
+            <text x="616" y="238" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">id · session_id · product_id</text>
+            <text x="616" y="256" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">weight_kg</text>
+            <text x="616" y="274" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">source: bluetooth | manual</text>
+            <text x="616" y="292" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">recorded_at</text>
+            <text x="616" y="310" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">deleted_at (soft delete)</text>
+          </g>
+
+          <!-- ConnectionEvent -->
+          <g>
+            <rect x="60" y="410" width="220" height="110" rx="8" fill="none" stroke="currentColor" stroke-opacity="0.3"/>
+            <rect x="60" y="410" width="220" height="30" rx="8" fill="var(--code-bg)" stroke="none"/>
+            <text x="76" y="430" font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="500" fill="currentColor" opacity="0.85">ConnectionEvent</text>
+            <text x="76" y="458" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">session_id</text>
+            <text x="76" y="476" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">status: connected | lost</text>
+            <text x="76" y="494" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">at &mdash; drives the indicator</text>
+          </g>
+
+          <!-- SessionProductSummary -->
+          <g>
+            <rect x="600" y="410" width="220" height="110" rx="8" fill="none" stroke="currentColor" stroke-opacity="0.3"/>
+            <rect x="600" y="410" width="220" height="30" rx="8" fill="var(--code-bg)" stroke="none"/>
+            <text x="616" y="430" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="500" fill="currentColor" opacity="0.85">SessionProductSummary</text>
+            <text x="616" y="458" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">session_id · product_id</text>
+            <text x="616" y="476" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">entry_count · total_weight_kg</text>
+            <text x="616" y="494" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.7">written once, immutable</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>Store and Product are reference data. Session and Entry are the live tables written while someone is weighing. ConnectionEvent is a thin heartbeat log &mdash; it exists only to answer &ldquo;when did the scale last actually speak?&rdquo; SessionProductSummary is written exactly once, when a session ends, so a store's history never recalculates itself if a product gets renamed later.</figcaption>
+    </figure>
+
+    <div class="entity-grid">
+      <div class="entity-card">
+        <div class="ehead"><span class="name">store</span><span class="tag">reference</span></div>
+        <table>
+          <tr><td class="field">id</td><td class="type">uuid</td></tr>
+          <tr><td class="field">name</td><td class="type">string</td></tr>
+          <tr><td class="field">code</td><td class="type">string</td></tr>
+        </table>
+      </div>
+      <div class="entity-card">
+        <div class="ehead"><span class="name">product</span><span class="tag">reference</span></div>
+        <table>
+          <tr><td class="field">id</td><td class="type">uuid</td></tr>
+          <tr><td class="field">name</td><td class="type">string</td></tr>
+          <tr><td class="field">sku</td><td class="type">string</td></tr>
+        </table>
+      </div>
+      <div class="entity-card">
+        <div class="ehead"><span class="name">session</span><span class="tag">live</span></div>
+        <table>
+          <tr><td class="field">id</td><td class="type">uuid</td></tr>
+          <tr><td class="field">store_id</td><td class="type">fk</td></tr>
+          <tr><td class="field">status</td><td class="type">enum</td></tr>
+          <tr><td class="field">started_at</td><td class="type">datetime</td></tr>
+          <tr><td class="field">ended_at</td><td class="type">datetime?</td></tr>
+          <tr><td class="field">ended_reason</td><td class="type">enum?</td></tr>
+        </table>
+      </div>
+      <div class="entity-card">
+        <div class="ehead"><span class="name">entry</span><span class="tag">live</span></div>
+        <table>
+          <tr><td class="field">id</td><td class="type">uuid</td></tr>
+          <tr><td class="field">session_id</td><td class="type">fk</td></tr>
+          <tr><td class="field">product_id</td><td class="type">fk</td></tr>
+          <tr><td class="field">weight_kg</td><td class="type">decimal</td></tr>
+          <tr><td class="field">source</td><td class="type">enum</td></tr>
+          <tr><td class="field">recorded_at</td><td class="type">datetime</td></tr>
+          <tr><td class="field">deleted_at</td><td class="type">datetime?</td></tr>
+        </table>
+      </div>
+      <div class="entity-card">
+        <div class="ehead"><span class="name">connection_event</span><span class="tag">log</span></div>
+        <table>
+          <tr><td class="field">id</td><td class="type">uuid</td></tr>
+          <tr><td class="field">session_id</td><td class="type">fk</td></tr>
+          <tr><td class="field">status</td><td class="type">enum</td></tr>
+          <tr><td class="field">at</td><td class="type">datetime</td></tr>
+        </table>
+      </div>
+      <div class="entity-card">
+        <div class="ehead"><span class="name">session_product_summary</span><span class="tag">rollup</span></div>
+        <table>
+          <tr><td class="field">session_id</td><td class="type">fk</td></tr>
+          <tr><td class="field">product_id</td><td class="type">fk</td></tr>
+          <tr><td class="field">entry_count</td><td class="type">int</td></tr>
+          <tr><td class="field">total_weight_kg</td><td class="type">decimal</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="flow">
+    <div class="section-head">
+      <h2><span class="num">02</span> Screen flow</h2>
+      <p class="section-dek">Three screens. The interesting part isn't the navigation &mdash; it's the two different ways a session reaches Ended, and what the pending screen is actually doing while it waits for the scale.</p>
+    </div>
+
+    <figure class="diagram">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 920 460" role="img" aria-label="Screen flow diagram: Home lists Pending and Ended sessions. Tapping create or a pending row opens the Pending session screen, which returns to Home via back, or reaches the Ended session screen either by a manual End Session action or automatically at the store's midnight. Tapping an ended row also opens the Ended session screen, which returns via back.">
+          <defs>
+            <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+
+          <!-- Home -->
+          <rect x="30" y="120" width="200" height="220" rx="10" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.6"/>
+          <rect x="30" y="120" width="200" height="34" rx="10" fill="var(--accent-soft)" stroke="none"/>
+          <text x="130" y="142" text-anchor="middle" font-family="Fraunces, serif" font-weight="600" font-size="15" fill="var(--accent)">Home</text>
+          <rect x="46" y="168" width="168" height="70" rx="6" fill="var(--code-bg)"/>
+          <text x="130" y="190" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.8">Pending list</text>
+          <text x="130" y="206" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity="0.6">connection chip per row</text>
+          <text x="130" y="222" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity="0.6">running total per row</text>
+          <rect x="46" y="250" width="168" height="70" rx="6" fill="var(--code-bg)"/>
+          <text x="130" y="272" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity="0.8">Ended list</text>
+          <text x="130" y="288" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity="0.6">date · product totals</text>
+
+          <!-- Pending -->
+          <rect x="360" y="30" width="220" height="220" rx="10" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.6"/>
+          <rect x="360" y="30" width="220" height="34" rx="10" fill="var(--ok-soft)" stroke="none"/>
+          <text x="470" y="52" text-anchor="middle" font-family="Fraunces, serif" font-weight="600" font-size="15" fill="var(--ok)">Session &middot; Pending</text>
+          <circle cx="382" cy="84" r="4" fill="var(--ok)"/>
+          <text x="392" y="88" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity="0.75">connected &middot; last read 4s ago</text>
+          <text x="376" y="112" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity="0.7">entries (multi per product)</text>
+          <text x="376" y="128" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity="0.55">&middot; each row: delete &#8594; undo</text>
+          <text x="376" y="150" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity="0.7">running subtotal / product</text>
+          <text x="376" y="196" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity="0.85">[ End session ]</text>
+          <text x="376" y="216" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity="0.85">[ &#8592; Back ]</text>
+
+          <!-- Ended -->
+          <rect x="670" y="120" width="220" height="180" rx="10" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.6"/>
+          <rect x="670" y="120" width="220" height="34" rx="10" fill="var(--line)" stroke="none"/>
+          <text x="780" y="142" text-anchor="middle" font-family="Fraunces, serif" font-weight="600" font-size="15" fill="currentColor" opacity="0.85">Session &middot; Ended</text>
+          <text x="686" y="172" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity="0.7">read-only</text>
+          <text x="686" y="190" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity="0.7">per-product totals</text>
+          <text x="686" y="208" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity="0.7">ended_reason shown</text>
+          <text x="686" y="264" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity="0.85">[ &#8592; Back ]</text>
+
+          <!-- Arrows -->
+          <g fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M230,175 C290,175 300,120 360,110" opacity="0.6" marker-end="url(#arrow2)"/>
+            <path d="M230,230 C300,230 320,145 360,130" opacity="0.35" marker-end="url(#arrow2)"/>
+            <path d="M360,170 C300,170 290,220 232,225" opacity="0.6" marker-end="url(#arrow2)"/>
+
+            <path d="M230,300 C420,340 560,300 670,235" opacity="0.6" marker-end="url(#arrow2)"/>
+            <path d="M670,255 C500,320 340,320 232,255" opacity="0.6" marker-end="url(#arrow2)"/>
+
+            <path d="M580,110 C625,95 645,95 670,150" opacity="0.85" stroke-width="1.8" marker-end="url(#arrow2)"/>
+            <path d="M580,170 C625,215 645,230 670,220" opacity="0.55" stroke-dasharray="4 4" marker-end="url(#arrow2)"/>
+          </g>
+
+          <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor">
+            <text x="255" y="100" opacity="0.75">+ create</text>
+            <text x="240" y="152" opacity="0.55">open pending row</text>
+            <text x="240" y="245" opacity="0.75">back</text>
+            <text x="330" y="330" opacity="0.75">open ended row</text>
+            <text x="330" y="360" opacity="0.75">back</text>
+            <text x="595" y="98" opacity="0.9" font-weight="500">end session (manual)</text>
+            <text x="595" y="205" opacity="0.7">store midnight (auto)</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>Two different arrows reach the same destination: a person tapping <span class="mono">End session</span>, or the store's own midnight passing with nothing tapped. Both must produce the same <span class="mono">SessionProductSummary</span> &mdash; the screen doesn't get to know which one happened.</figcaption>
+    </figure>
+
+    <div class="screen-list">
+      <div class="screen-card">
+        <div class="label">Home<span class="state">Pending + Ended</span></div>
+        <ul>
+          <li><b>Create</b> sits top-right, always reachable, not buried in a menu.</li>
+          <li>Each pending row carries a <span class="chip ok"><span class="dot"></span>connected</span> or <span class="chip warn"><span class="dot"></span>disconnected</span> chip &mdash; state alone isn't enough, so it also carries <i>time since last reading</i>, since a scale can sit &ldquo;connected&rdquo; and silent.</li>
+          <li>Ended rows are grouped by day, newest first, each showing its per-product totals inline &mdash; no tap needed just to see the number.</li>
+        </ul>
+      </div>
+      <div class="screen-card">
+        <div class="label">Session<span class="state">Pending</span></div>
+        <ul>
+          <li>Every incoming reading appends a row; the same product can appear many times, each row deletable with an <b>Undo</b> toast rather than a confirm dialog.</li>
+          <li><b>End session</b> is a visible action here, not just a background job &mdash; a shift ending early shouldn't have to wait for midnight.</li>
+          <li>Back returns to Home without ending the session; it keeps running in the background.</li>
+        </ul>
+      </div>
+      <div class="screen-card">
+        <div class="label">Session<span class="state">Ended</span></div>
+        <ul>
+          <li>Read-only by design &mdash; it renders straight from <span class="mono">session_product_summary</span>, never the raw entry list, so it can't drift from what was reported at close.</li>
+          <li>Shows <i>why</i> it ended (<span class="mono">manual</span> or <span class="mono">auto_eod</span>) &mdash; useful the first time someone asks why a session closed with an odd total.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="decisions">
+    <div class="section-head">
+      <h2><span class="num">03</span> Key decisions</h2>
+      <p class="section-dek">The choices worth flagging before anyone builds against this &mdash; each one trades something away on purpose.</p>
+    </div>
+    <div class="decisions">
+      <div class="decision">
+        <div class="q">Delete is soft, with Undo &mdash; not a confirm dialog</div>
+        <div class="a">Confirm dialogs get reflexively tapped through by busy staff; a brief Undo window actually prevents accidental loss without slowing down repeat weighing.</div>
+      </div>
+      <div class="decision">
+        <div class="q">The connection indicator carries a timestamp, not just a state</div>
+        <div class="a">&ldquo;Connected&rdquo; can lie &mdash; a scale can hold the link while sending nothing. Showing time-since-last-reading is what actually tells staff whether it's safe to keep weighing.</div>
+      </div>
+      <div class="decision">
+        <div class="q">Two paths to Ended, one rollup</div>
+        <div class="a">Manual close and the midnight job must write the identical <span class="mono">session_product_summary</span> shape &mdash; the Ended screen has no idea, and shouldn't need to know, which one fired.</div>
+      </div>
+      <div class="decision">
+        <div class="q">Summaries are written once, not recomputed on read</div>
+        <div class="a">If a product gets renamed six months later, a closed day's totals shouldn't silently change. History is a record, not a live query.</div>
+      </div>
+      <div class="decision">
+        <div class="q">Entries save locally before they save anywhere else</div>
+        <div class="a">A shop-floor connection is the least reliable part of this whole system &mdash; a reading should never be lost because the network dropped a beat.</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Scalehouse &middot; weigh-session data model &amp; screen flow &middot; draft for review
+</footer>

@@ -1,0 +1,9 @@
+{
+  "name": "Scale Bluetooth POC",
+  "short_name": "ScalePOC",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#782B90",
+  "icons": []
+}
