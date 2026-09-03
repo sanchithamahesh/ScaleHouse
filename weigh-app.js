@@ -391,7 +391,7 @@ function renderPendingSession(s) {
         <div class="field-row">
           <div class="field">
             <label>Weight (kg)${scale.connected ? ' <span class="live-tag">' + ICON_BLUETOOTH + 'live from scale</span>' : ''}</label>
-            <input type="number" id="manualWeight" step="0.001" placeholder="0.000" value="${scale.connected && scale.currentReading ? scale.currentReading : ''}" />
+            <input type="number" id="manualWeight" step="0.001" min="0" placeholder="0.000" value="${scale.connected && scale.currentReading ? scale.currentReading : ''}" />
           </div>
           <button class="btn primary" id="addManualBtn">Add</button>
         </div>
@@ -550,14 +550,20 @@ async function readLoop(port) {
         for (const part of parts) {
           const match = part.trim().match(/-?\d+(\.\d+)?/);
           if (match) {
-            // Show the live reading in the weight field rather than auto-adding it -
-            // staff confirm with the Add button, same as a manual entry, so nothing
-            // lands in the list without the person seeing it first.
-            // The scale sends zero-padded text (e.g. "000.507") - strip that to a
-            // clean number before displaying it.
-            scale.currentReading = parseFloat(match[0]).toFixed(3);
-            scale.lastReadingAt = new Date().toISOString();
-            route();
+            const weight = parseFloat(match[0]);
+            // Negative/zero readings are load-cell noise (tare drift, settling
+            // while something is placed or lifted) - never a real product
+            // weight, so they're dropped here rather than shown and confirmed.
+            if (weight > 0) {
+              // Show the live reading in the weight field rather than auto-adding it -
+              // staff confirm with the Add button, same as a manual entry, so nothing
+              // lands in the list without the person seeing it first.
+              // The scale sends zero-padded text (e.g. "000.507") - strip that to a
+              // clean number before displaying it.
+              scale.currentReading = weight.toFixed(3);
+              scale.lastReadingAt = new Date().toISOString();
+              route();
+            }
           }
         }
       }
