@@ -1,18 +1,18 @@
-# Scalehouse — User Guide
+# WeighBridge — User Guide
 
 For store staff and whoever supports them. Covers what the app does, how to get it
 installed, how to pair it to the scale, and how to use it day to day.
 
-## What Scalehouse does
+## What WeighBridge does
 
-Scalehouse logs **culling weight sessions** — produce or stock being pulled from the
+WeighBridge logs **culling weight sessions** — produce or stock being pulled from the
 shelf and weighed before write-off, so the business has a record of what and how much
 was removed, by store.
 
 You:
 1. Start a session for a store.
 2. Weigh each item on the scale, pick the product, and add the reading to the session.
-3. End the session when you're done — Scalehouse totals everything by product.
+3. End the session when you're done — WeighBridge totals everything by product.
 
 Anything not manually ended gets automatically closed out at the end of the day, so
 nothing is left "open" indefinitely.
@@ -33,14 +33,14 @@ nearby and just need to log manual weights, either option works with manual entr
 There is no Play Store listing (yet) — this is a sideloaded app, installed from a
 direct download link, the same way you'd install any APK a store manager sends you.
 
-1. Get the download link from your manager (it changes each time a new version is
+1. Get the download link from the Team (it changes each time a new version is
    built — always use the latest link they give you, not an old one).
 2. Open the link in your phone's browser and download the `.apk` file.
 3. Tap the downloaded file to install it. If Android blocks it with **"Install
    blocked"** or asks about installing from an unknown source, tap **Settings** in
    that prompt and allow installs from the browser you used — this is a one-time
    permission per browser, not a real security warning about this specific app.
-4. Open **Scalehouse** from your app drawer once it's installed.
+4. Open **WeighBridge** from your app drawer once it's installed.
 
 No cable connection to a computer is ever needed to install or update it — always a
 direct download + tap-to-install, the same as any file you'd download and open.
@@ -61,7 +61,7 @@ Bluetooth headphones or speaker:
 
 ## Connecting inside the app
 
-1. Open Scalehouse.
+1. Open WeighBridge.
 2. At the top of any screen there's a connection bar showing **"not connected"** or
    **"connected"**. Tap **Connect scale**.
 3. The app looks for the paired **BT1041** and opens a connection to it. This takes a
@@ -73,8 +73,9 @@ Bluetooth headphones or speaker:
 5. **Disconnect scale** on the same bar closes the connection when you're done for
    the day (not required — just tidy).
 
-## Running a weighing session
-
+**## Running a weighing session⚠️ Negative readings get logged too.
+If the scale shows a minus number (like -0.045) when you press MR, the app adds it anyway — it does not check if the number is negative.
+Fix: Check the scale screen before pressing MR.**
 1. From the home screen, tap **New session**, choose the store, and tap **Start
    session**.
 2. Pick the **product** from the dropdown.
@@ -111,7 +112,7 @@ whatever was logged up to that point.
 | Scale won't connect | Check it's powered on and still paired in Android Bluetooth settings (re-pair if it's disappeared from the list). |
 | Connected, but no reading shows up | Make sure something is actually on the scale platform and it's settled (not mid-weigh/jumping). Try placing and removing the item once to "wake" the reading. |
 | Weight shown looks wrong (e.g. 0 or negative) | The app deliberately ignores 0/negative readings — these are scale noise (settling/tare drift), not real weights. Wait a moment for a steady reading. |
-| App won't install / Android blocks it | This is the standard "unknown source" warning for any sideloaded app, not an error specific to Scalehouse — allow installs from your browser in the prompt Android shows, then retry. |
+| App won't install / Android blocks it | This is the standard "unknown source" warning for any sideloaded app, not an error specific to WeighBridge — allow installs from your browser in the prompt Android shows, then retry. |
 | Need to reinstall on a new phone | Re-download the latest link from your manager and repeat the pairing steps above — sessions from the old phone don't transfer (see note below). |
 
 ## One thing to know: data lives on the device
