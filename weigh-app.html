@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Scalehouse</title>
+<title>WeighBridge</title>
 <meta name="theme-color" content="#782B90" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,8 +64,6 @@
   }
   header.top h1 > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
   header.top h1 .brand-yellow { color: var(--yellow); }
-  header.top .title-group { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  header.top .subtitle { font-size: 12px; color: rgba(255,255,255,0.75); font-weight: 500; letter-spacing: 0; }
   header.top h1 .logo-mark {
     width: 42px; height: 42px; border-radius: 11px;
     background: var(--yellow); color: var(--purple-dark);
@@ -73,21 +71,11 @@
     flex: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   }
   header.top h1 .logo-mark svg { width: 24px; height: 24px; }
-  header.top .back {
-    background: none; border: none; color: white; cursor: pointer;
-    display: flex; align-items: center; gap: 4px; flex: none; white-space: nowrap;
-    font-size: 15px; font-weight: 600; padding: 8px 10px 8px 4px;
-    min-height: 44px; border-radius: 8px;
-  }
-  header.top .back:hover { background: rgba(255,255,255,0.14); }
-  header.top .spacer { width: 44px; flex: none; }
-  @media (max-width: 480px) {
+  @media (max-width: 560px) {
     header.top .bar-inner { padding: 0 12px; gap: 8px; }
     header.top h1 { font-size: 17px; gap: 8px; }
     header.top .logo-mark { width: 32px; height: 32px; border-radius: 8px; }
     header.top .logo-mark svg { width: 18px; height: 18px; }
-    header.top .subtitle { display: none; }
-    header.top .spacer { width: 0; }
   }
   header.top .header-actions { display: flex; align-items: center; gap: 10px; flex: none; }
   header.top button.create {
@@ -97,6 +85,192 @@
     transition: filter 0.15s ease;
   }
   header.top button.create svg { width: 17px; height: 17px; }
+  header.top .icon-btn {
+    background: rgba(255,255,255,0.14); border: none; color: white; border-radius: 8px;
+    width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex: none;
+  }
+  header.top .icon-btn svg { width: 20px; height: 20px; }
+  header.top .icon-btn:hover { background: rgba(255,255,255,0.24); }
+
+  /* ---------- Store chip: mimics Product Lens's locked/switchable store Chip ---------- */
+  .store-chip {
+    display: inline-flex; align-items: center; gap: 7px; flex: none;
+    background: var(--yellow); color: var(--purple-dark); border: none; border-radius: 8px;
+    height: 42px; padding: 0 14px; font-size: 13.5px; font-weight: 700;
+    font-family: inherit; cursor: pointer; max-width: 220px;
+  }
+  .store-chip svg { width: 15px; height: 15px; flex: none; }
+  .store-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .store-chip.locked { cursor: default; }
+  .store-chip:not(.locked):hover { filter: brightness(0.94); }
+  @media (max-width: 560px) {
+    .store-chip { max-width: 130px; padding: 0 10px; font-size: 12.5px; }
+  }
+
+  /* ---------- Store picker modal list ---------- */
+  .store-modal-list { max-height: 320px; overflow-y: auto; margin-top: 4px; }
+  .store-modal-row {
+    padding: 12px 6px; font-size: 14.5px; cursor: pointer; border-bottom: 1px solid var(--line);
+  }
+  .store-modal-row:last-child { border-bottom: none; }
+  .store-modal-row:hover { background: var(--purple-tint); }
+
+  /* ---------- Hamburger menu panel ---------- */
+  .menu-panel {
+    position: absolute; top: 100%; right: clamp(18px, 3vw, 40px);
+    background: var(--paper); color: var(--ink); border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.22); width: 240px; z-index: 20; overflow: hidden;
+    margin-top: 8px;
+  }
+  .menu-hi { padding: 14px 16px; font-size: 13.5px; color: var(--purple-light); border-bottom: 1px solid var(--line); }
+  .menu-item {
+    display: block; width: 100%; text-align: left; background: none; border: none;
+    padding: 12px 16px; font-size: 14.5px; color: var(--ink); cursor: pointer; font-family: inherit;
+  }
+  .menu-item:hover { background: var(--ground); }
+  .menu-logout { color: var(--danger); font-weight: 600; }
+  header.top .icon-btn.round { border-radius: 50%; }
+
+  /* ---------- Plain nav link button in the header ---------- */
+  header.top .nav-link {
+    background: rgba(255,255,255,0.14); color: white; border: none; border-radius: 8px;
+    padding: 0 16px; height: 42px; font-size: 14px; font-weight: 600; display: flex; align-items: center;
+  }
+  header.top .nav-link:hover { background: rgba(255,255,255,0.24); }
+
+  /* ---------- Section title row (page heading) ---------- */
+  .section-title-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 18px clamp(18px, 3vw, 40px) 6px;
+    background: var(--ground);
+  }
+  .page-title { font-size: 20px; font-weight: 700; margin: 0; }
+
+  /* ---------- Content-level back link, mimicking Product Lens's "Back to Home" ---------- */
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--purple); font-weight: 600; font-size: 14.5px; text-decoration: none;
+  }
+  .back-link:hover { text-decoration: underline; }
+  .page-nav-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; flex-wrap: nowrap; }
+  @media (max-width: 380px) {
+    .back-link { font-size: 13px; }
+  }
+
+  /* ---------- Frozen nav row: full-bleed like the header above it, not
+     confined to the .narrow column - a centered strip floating below a
+     full-width header is exactly what read as an odd "boxed" element.
+     It's a sibling of main now (not nested inside .narrow), so it starts
+     immediately after the header with zero gap, no offset tricks needed.
+     Only plain text/buttons live here (no rounded panel edges), so unlike
+     freezing the stepper too, this never produces the "sliced rounded
+     corner" artifact - content just scrolls under it normally. ---------- */
+  .page-nav-row.frozen {
+    position: sticky; top: 76px; z-index: 6;
+    background: var(--ground);
+    padding: 14px clamp(18px, 3vw, 40px) 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 0 var(--line);
+  }
+
+  /* ---------- Compact Bluetooth status icon (session pages): connect-only,
+     no disconnect action once connected; a distinct "connecting" state so
+     the button can't be double-clicked mid-attempt ---------- */
+  .bt-status-btn {
+    display: inline-flex; align-items: center; gap: 7px; flex: none;
+    border: 1.5px solid var(--line); background: var(--paper); color: var(--ink-soft);
+    border-radius: 8px; height: 40px; padding: 0 14px; font-size: 13.5px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+  }
+  .bt-status-btn svg { width: 16px; height: 16px; flex: none; }
+  .bt-status-btn.disconnected { color: var(--purple); border-color: var(--purple-tint); }
+  .bt-status-btn.disconnected:hover { background: var(--purple-tint); }
+  .bt-status-btn.connecting { color: var(--warn); border-color: var(--warn-tint); background: var(--warn-tint); cursor: default; }
+  .bt-status-btn.connected { color: var(--ok); border-color: var(--ok-tint); background: var(--ok-tint); cursor: default; }
+  .bt-status-btn.unavailable { color: var(--ink-faint); cursor: default; }
+  .bt-status-btn:disabled { opacity: 1; }
+  @media (max-width: 380px) {
+    .bt-status-btn { height: 36px; padding: 0 10px; font-size: 12.5px; }
+  }
+  /* flex-wrap: nowrap overrides .toolbar's own flex-wrap: wrap - without it,
+     the Create button gets pushed to its own line on narrow phones. */
+  .filter-row { align-items: center; gap: 12px; flex-wrap: nowrap; padding-top: 10px; padding-bottom: 10px; }
+  .toolbar.filter-row { background: var(--ground); }
+  .filter-row .btn.yellow { flex: none; }
+  .filter-group { display: flex; flex-direction: row; align-items: center; gap: 12px; flex-wrap: nowrap; min-width: 0; }
+
+  /* ---------- Filter fields: label sits above the box, matching Market Pulse's filter bar exactly ---------- */
+  .filter-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .filter-field label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.01em; color: var(--ink-soft); margin: 0 1px;
+  }
+  .filter-field select, .filter-field input {
+    height: 42px; font-size: 14.5px; font-weight: 600; color: var(--purple-dark);
+    border-radius: 8px; border: 1.5px solid #d9d2de;
+    padding: 0 14px; width: 100%; background: var(--paper);
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+  }
+  .filter-select-wrap { position: relative; }
+  .filter-select-wrap select { padding-right: 34px; }
+  .filter-select-wrap svg {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    width: 14px; height: 14px; color: var(--ink-faint); pointer-events: none;
+  }
+  .filter-field select:focus, .filter-field input:focus { border-color: var(--purple); }
+  .filter-reset {
+    height: 42px; padding: 0 14px; border: none; background: none; color: var(--ink-soft);
+    font-size: 13.5px; font-weight: 600; cursor: pointer; border-radius: 8px;
+    display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; flex: none;
+    align-self: flex-end;
+  }
+  .filter-reset:hover { background: var(--ground); color: var(--ink); }
+  .filter-reset svg { width: 15px; height: 15px; }
+
+  /* ---------- Login screen ---------- */
+  .login-shell { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .login-card {
+    background: var(--paper); border-radius: 16px; padding: 32px 28px; max-width: 360px; width: 100%;
+    box-shadow: var(--shadow-card);
+  }
+  .login-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; margin-bottom: 18px; }
+  .login-logo .logo-mark {
+    width: 34px; height: 34px; border-radius: 9px; background: var(--yellow); color: var(--purple-dark);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .login-logo .logo-mark svg { width: 20px; height: 20px; }
+  .login-logo .brand-yellow { color: var(--purple); }
+  .login-card h3 { margin: 0 0 18px; font-size: 15px; color: var(--ink-soft); font-weight: 600; }
+
+  /* ---------- Searchable product combo (mimics Product Lens's search field: a
+     trailing search-icon button, and a "No products found matching ..." empty state) ---------- */
+  .product-combo { position: relative; }
+  .product-search-wrap { position: relative; }
+  .product-search-wrap input { padding-right: 44px !important; }
+  .search-trigger {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 32px; border: none; background: none; color: var(--purple);
+    display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 7px;
+  }
+  .search-trigger svg { width: 17px; height: 17px; }
+  .search-trigger:hover { background: var(--purple-tint); }
+  .product-results {
+    position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+    box-shadow: var(--shadow-card-hover); max-height: 260px; overflow-y: auto; z-index: 15;
+  }
+  .product-result-row {
+    display: flex; justify-content: space-between; gap: 10px; padding: 11px 14px;
+    font-size: 14.5px; cursor: pointer; border-bottom: 1px solid var(--line);
+  }
+  .product-result-row:last-child { border-bottom: none; }
+  .product-result-row:hover { background: var(--purple-tint); }
+  .product-result-row .sku { color: var(--ink-faint); font-size: 12px; font-family: "IBM Plex Mono", monospace; }
+  .product-result-row.empty-row {
+    justify-content: flex-start; gap: 9px; color: var(--ink-faint); cursor: default;
+  }
+  .product-result-row.empty-row svg { width: 16px; height: 16px; flex: none; color: var(--purple); }
+  .product-result-row.empty-row:hover { background: none; }
   header.top button.create:hover { filter: brightness(0.94); }
 
   /* ---------- Device bar: the ONE global scale connection control, shown identically on every screen ---------- */
@@ -153,6 +327,11 @@
   }
   .list-grid .card { margin-bottom: 0; }
   .list-grid .empty { grid-column: 1 / -1; }
+  @media (max-width: 480px) {
+    /* A 300px minmax column can overflow a sub-360px phone with its side
+       padding included - force a single full-width column instead. */
+    .list-grid { grid-template-columns: 1fr; }
+  }
 
   .narrow { max-width: 640px; margin: 0 auto; }
 
@@ -175,17 +354,16 @@
   /* ---------- Cards ---------- */
   .card {
     background: var(--paper); border-radius: 12px; padding: 16px 18px;
-    box-shadow: var(--shadow-card);
+    border: 1px solid var(--purple); box-shadow: 0 4px 12px rgba(120,43,144,0.15);
     margin-bottom: 10px; cursor: pointer;
     transition: transform 0.18s ease, box-shadow 0.18s ease;
   }
   @media (hover: hover) {
-    .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(120,43,144,0.25); }
   }
   .card .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   .card .store { font-weight: 600; font-size: 15.5px; }
   .card .meta { font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; }
-  .card .total { font-weight: 700; font-size: 15.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
   /* ---------- Chips ---------- */
   .chip {
@@ -197,6 +375,40 @@
   .chip.ok { background: var(--ok-tint); color: var(--ok); }
   .chip.warn { background: var(--warn-tint); color: var(--warn); }
   .chip.off { background: var(--line); color: var(--ink-faint); }
+
+  /* ---------- Entry / Review / Done stepper ---------- */
+  .stepper { display: flex; align-items: center; margin: 4px 2px 22px; }
+  .stepper-item { display: flex; align-items: center; gap: 8px; flex: none; }
+  .stepper-dot {
+    width: 26px; height: 26px; border-radius: 50%; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums;
+    background: var(--line); color: var(--ink-faint);
+  }
+  .stepper-item.done .stepper-dot { background: var(--purple); color: white; }
+  .stepper-item.current .stepper-dot { background: var(--purple); color: white; box-shadow: 0 0 0 4px var(--purple-tint); }
+  .stepper-item.pending .stepper-dot { background: var(--line); color: var(--ink-faint); }
+  .stepper-label { font-size: 13.5px; font-weight: 600; color: var(--ink-faint); white-space: nowrap; }
+  .stepper-item.done .stepper-label, .stepper-item.current .stepper-label { color: var(--ink); }
+  .stepper-line { flex: 1 1 auto; height: 2px; background: var(--line); margin: 0 10px; min-width: 24px; }
+  .stepper-line.done { background: var(--purple); }
+  @media (max-width: 380px) {
+    /* Three labeled steps + two connectors can outgrow a narrow phone's
+       content width - shrink everything and let it scroll as a last resort
+       rather than silently overflow the page. */
+    .stepper { overflow-x: auto; padding-bottom: 2px; }
+    .stepper-dot { width: 22px; height: 22px; font-size: 11px; }
+    .stepper-label { font-size: 12px; }
+    .stepper-item { gap: 6px; }
+    .stepper-line { margin: 0 6px; min-width: 16px; }
+  }
+
+  /* ---------- Test tools panel: deliberately loud, temporary ---------- */
+  /* Solid border, not dashed: a dashed edge partially hidden behind the
+     frozen nav row above it reads as a broken/cut fragment when scrolled -
+     a solid border just tucks under cleanly like every other panel. */
+  .test-tools { border: 1.5px solid var(--warn); background: var(--warn-tint); }
+  .test-tools h3 { color: var(--warn); }
 
   /* ---------- Panels ---------- */
   .panel { background: var(--paper); border-radius: 12px; padding: 18px; margin-bottom: 14px; box-shadow: var(--shadow-card); }
@@ -211,22 +423,26 @@
     display: inline-flex; align-items: center; justify-content: center; gap: 7px;
     transition: filter 0.15s ease, background 0.15s ease;
   }
+  .btn svg { width: 15px; height: 15px; flex: none; }
   .btn.primary { background: var(--purple); color: white; }
   .btn.primary:hover { background: var(--purple-dark); }
   .btn.secondary { background: var(--purple-tint); color: var(--purple-dark); }
   .btn.secondary:hover { filter: brightness(0.97); background: #ecdff1; }
   .btn.danger { background: var(--danger-tint); color: var(--danger); }
   .btn.danger:hover { filter: brightness(0.96); }
+  .btn.yellow { background: var(--yellow); color: var(--purple-dark); border-radius: 12px; font-weight: 700; }
+  .btn.yellow:hover { filter: brightness(0.94); }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
   .btn.block { width: 100%; }
 
-  select, input[type=number], input[type=text] {
+  select, input[type=number], input[type=text], input[type=date] {
     font-size: 15.5px; padding: 0 12px; height: 46px; border-radius: 8px; border: 1.5px solid var(--line); width: 100%;
     background: white; color: var(--ink); font-family: inherit;
     transition: border-color 0.15s ease;
   }
   select:focus, input:focus { outline: none; border-color: var(--purple); }
+  input:disabled { background: var(--ground); color: var(--ink-faint); cursor: not-allowed; }
   label { font-size: 12.5px; color: var(--ink-soft); font-weight: 600; display: block; margin-bottom: 6px; }
   .live-tag {
     display: inline-flex; align-items: center; gap: 4px;
