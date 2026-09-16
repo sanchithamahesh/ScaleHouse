@@ -749,11 +749,6 @@ function renderInProgressSession(s) {
     <main><div class="narrow">
       ${stepperHTML(0)}
 
-      <div class="panel test-tools">
-        <h3>Test tools — temporary, remove once the flow is confirmed</h3>
-        <button class="btn secondary" id="addTestEntryBtn">${ICON_PLUS}Add test entry</button>
-      </div>
-
       <div class="panel">
         <h3>Add entry</h3>
         <div class="field product-combo">
@@ -791,12 +786,6 @@ function renderInProgressSession(s) {
 
   bindTopHeader();
   bindScaleStatusIcon();
-
-  document.getElementById('addTestEntryBtn').addEventListener('click', () => {
-    const product = db.products[Math.floor(Math.random() * db.products.length)];
-    const weight = Math.round((0.3 + Math.random() * 2.7) * 1000) / 1000;
-    logEntry(s.id, product.id, weight, 'manual');
-  });
 
   // --- Searchable product combo (debounced, same 500ms pattern as Product Lens) ---
   const searchInput = document.getElementById('productSearch');
